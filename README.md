@@ -1,3 +1,3 @@
 # CodeSamples
-Samples of work from bringpro project.
+Samples of work from bringpro project. </br>
 Tim Rossiter
