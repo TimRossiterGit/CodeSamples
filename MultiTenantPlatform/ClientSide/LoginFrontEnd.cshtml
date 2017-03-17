@@ -1,0 +1,219 @@
+﻿@model Sabio.Web.Models.ViewModels.WebsiteViewModel
+
+@{
+    ViewBag.Title = "LoginFrontEnd";
+    Layout = "~/Views/Shared/_LayoutFrontEnd.cshtml";
+
+   
+}
+
+<input type="hidden" id="websiteSlugId" value="@Model.Slug" />
+
+
+
+<style>
+      .login {
+              
+           
+              background: url(@Model.GetImageValueBySettingSlug("page-background-image")) no-repeat center center fixed; 
+              -webkit-background-size: cover;
+              -moz-background-size: cover;
+              -o-background-size: cover;
+               background-size: cover;
+              background-color: @Model.GetStringValueBySettingSlug("page-background-color");
+   
+ height: 100%;
+          } 
+
+     .default-logo {
+                 display: block;
+                   margin: 0 auto;
+            }
+
+    .login img {
+    width: 50%;
+    height: 50%;
+}
+
+    .login-header {
+    background-color: @Model.GetStringValueBySettingSlug("login-background-color");
+   
+    }
+
+    .l-block {
+    background-color: @Model.GetStringValueBySettingSlug("login-background-color-text");
+    border: 1px solid black;
+    margin: 100px;
+   
+    height: 100%;
+  
+    }
+
+
+</style>
+
+
+
+<div class="container" ng-controller="loginController as main">
+
+    <div class="login" data-lbg="teal">
+        <div class="l-block toggled" id="l-login">            
+            <div class="lb-header login-header login-color-text">
+                <img class="stnd default-logo dark-version" alt="bringpro"
+                     src="@Model.GetImageValueBySettingSlug("login-logo")" />
+                <p class="text-center">@Model.GetStringValueBySettingSlug("login-title")</p>
+            </div>
+            
+            <div class="lb-body">
+                <form name="main.loginForm" ng-submit="main.submitLogin(loginForm.$valid)" role="form" novalidate>
+                    <div class="form-group fg-float" ng-class="{'has-error' : main.loginForm.email.$error && !main.loginForm.email.$pristine }">
+                        <div class="fg-line">
+                            <input type="text" name="email" class="input-sm form-control fg-input" id="email" ng-model="main.loginPayload.email" required>
+                            <p ng-show="main.loginForm.email.$error.email && !main.loginForm.email.$pristine" class="help-block">Phone number is required.</p>
+                            <label class="fg-label">Phone Number</label>
+                        </div>
+                    </div>
+                    <div class="form-group fg-float" ng-class="{'has-error' : main.loginForm.password.$invalid && !main.loginForm.password.$pristine }">
+                        <div class="fg-line">
+                            <input type="password" name="password" class="input-sm form-control fg-input" id="password" ng-model="main.loginPayload.password" ng-pattern="main.regex" required>
+                            <p ng-show="main.loginForm.password.$invalid && !main.loginForm.password.$pristine && main.loginForm.password.$error.required" class="help-block">Password is required.</p>
+                            <small ng-show="main.loginForm.password.$invalid && !main.loginForm.password.$pristine && main.loginForm.password.$error.pattern" class="help-block">Passwords must be at least 6 characters. Passwords must have at least one non letter or digit character. Passwords must have at least one digit ('0'-'9'). Passwords must have at least one uppercase ('A'-'Z').</small>
+                            <label class="fg-label">Password</label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn palette-Teal bg waves-effect loginButton" ng-disabled="loginForm.$invalid">Sign in</button>
+
+                    <div class="m-t-20">
+                        @*<a data-block="#l-register" data-bg="blue" class="palette-Teal text d-block m-b-5" href="~/Public/RegisterUser">Create an account</a>*@
+                        <a class="palette-Teal text d-block m-b-5" href="/@Model.Slug/Register">Create an account</a>
+                        <a href="/@Model.Slug/passwordreset" class="palette-Teal text">Forgot password?</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    .paddingBottom {
+        padding-bottom: 20px;
+    }
+</style>
+
+
+@section Scripts {
+    
+    <script src="~/Assets/App/Services/sabio.services.websiteSettings.js"></script>
+
+    <script src="~/Assets/App/Services/sabio.services.user.js"></script>
+
+    <script type="text/javascript">
+         //Test For BringgApi, leave in here.
+         //sabio.services.user.insertNewBringgUser("{}", sabio.page.handlers.insertNewBringgUserSuccess, sabio.page.handlers.insertNewBringgUserError);
+
+    </script>
+
+
+    <script type="text/javascript">
+
+        // ANGULAR \\
+
+        //service
+        (function () {
+            "use strict";
+            console.log('mic check ng');
+
+            angular.module(APPNAME)
+            .factory('$loginService', loginServiceFactory);
+
+            loginServiceFactory.$inject = ['$baseService', '$sabio'];
+
+            function loginServiceFactory($baseService, $sabio) {
+                console.log('loginServiceFactory: firing');
+                var loginServiceObject = sabio.services.user;
+
+                var newService = $baseService.merge(true, {}, loginServiceObject, $baseService);
+
+                return newService;
+                console.log('newService: ', newService);
+            }
+
+
+        })();
+
+
+        //controller -
+        (function () {
+            "use strict";
+
+
+
+            angular
+            .module(APPNAME)
+
+            .controller('loginController', loginController);
+
+            loginController.$inject = ['$scope', '$baseController', '$loginService', '$location'];
+
+
+            function loginController(
+                  $scope
+                , $baseController
+                , $loginService
+                , $location) {
+
+                var vm = this;
+                vm.$loginService = $loginService;
+                vm.$scope = $scope;
+                vm.loginForm = null;
+                vm.loginPayload = {};
+                vm.loginPayload.Slug = $("#websiteSlugId").val();
+
+                //bindable members(functions)
+                vm.submitLogin = _submitLogin;
+                vm.loginError = _loginError;
+                vm.loginSuccess = _loginSuccess;
+                //simulate inheritance
+                $baseController.merge(vm, $baseController);
+                //
+                vm.notify = vm.$loginService.getNotifier($scope);
+                //regex setting for password validation
+                vm.regex = /(?=.*[!@@#\$%\^&\*])(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])/;
+
+               
+
+                function _submitLogin() {
+
+                    console.log('loginPayload:', vm.loginPayload);
+                    vm.$loginService.login(vm.loginPayload, vm.loginSuccess, vm.loginError);
+                };
+
+                function _loginSuccess(data) {
+                    console.log('login success');
+                    vm.data = data.item;
+                    if (vm.data.role.name == "Customer") {
+                        console.log(data);
+                        vm.$alertService.success("You have successfully logged in!");
+                        window.location = "job";
+                    } else {
+                        window.location = "http://bringpro.dev/backoffice/dashboardAdmin";
+
+                    }
+
+                };
+
+                function _loginError(jqxhr, error) {
+                    console.log('login error', error);
+                    vm.$alertService.error("Please check username and password.");
+
+                };
+            }
+        })();
+
+
+
+    </script>
+
+}

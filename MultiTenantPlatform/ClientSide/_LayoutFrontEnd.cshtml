@@ -1,0 +1,351 @@
+﻿@model Sabio.Web.Models.ViewModels.WebsiteViewModel
+
+
+
+
+<!DOCTYPE html>
+<html data-ng-app="bringproApp">
+<!--[if IE 9 ]><html class="ie9"><![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    @if (null == Model.Website)
+    {
+        <title>bringpro</title>
+    }
+    else
+    {
+        <title>@Model.Website.Name</title>
+    }
+
+    <!-- Vendor CSS -->
+    <link href="~/Assets/bower_components/angular-toastr/dist/angular-toastr.css" rel="stylesheet" />
+    <link href="~/Assets/Themes/Material-Admin/vendors/bower_components/animate.css/animate.min.css" rel="stylesheet" />
+    <link href="~/Assets/Themes/Material-Admin/vendors/bower_components/material-design-iconic-font/dist/css/material-design-iconic-font.min.css" rel="stylesheet" />
+    <link href="~/Assets/Themes/Material-Admin/vendors/bower_components/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.min.css" rel="stylesheet" />
+    <link href="~/Assets/Themes/Material-Admin/vendors/bower_components/google-material-color/dist/palette.css" rel="stylesheet" />
+
+
+    <link href="~/Assets/Themes/Material-Admin/css/app.min.1.css" rel="stylesheet" />
+    <link href="~/Assets/Themes/Material-Admin/css/app.min.2.css" rel="stylesheet" />
+    <link href="~/Assets/Themes/bringpro/css/bringProFrontEnd.css" rel="stylesheet" />
+
+    <style>
+        #header {
+            margin-bottom: 0px;
+            z-index: 0;
+            box-shadow: 0 2px 5px 0 #000000, 0 2px 5px 0 #000000;
+            background: url(@Model.GetImageValueBySettingSlug("header-background-image")) no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            width: 100%;
+            background-color: @Model.GetStringValueBySettingSlug("header-background-image");
+        }
+
+        .default-logo {
+            height: @Model.GetStringValueBySettingSlug("header-logo-height")px;
+            width: @Model.GetStringValueBySettingSlug("header-logo-width")px;
+        }
+        .textlink {
+            font-size: 15px;
+            color: white;
+            padding-left: 15px;
+        }
+
+        .hm-profile{
+             padding-left:15px;
+        }
+
+        #deliveryTextLink{
+            color: orange;
+            font-size: 15px;
+            padding-left: 15px;
+        }
+
+    </style>
+
+
+</head>
+
+
+<body class="" header-color login-bg" ng-controller="frontEndLayoutController as layout">
+    <header id="header" class="media">
+
+        <div class="pull-left h-logo col-md-8">
+            <a href="/@Model.Slug/home" class="hidden-xs">
+                <img class="default-logo"
+                     src="@Model.GetImageValueBySettingSlug("header-logo-image")" />
+            </a>
+        </div>
+        <ul class="pull-right h-menu">
+            <li>
+                <a id="deliveryTextLink" ng-click="layout.openModal(requestButton)"><i class="zmdi zmdi-zmdi zmdi-truck"></i>  Request Delivery</a>
+            </li>
+
+            @if (Model != null && Model.User != null)
+            {
+                if (Model.User.Role.Name != "Customer")
+                {
+                    <li>
+                        <a class="textlink" href="/backoffice"><i class="zmdi zmdi-zmdi zmdi-assignment-o zmdi-hc-fww"></i>  Back Office</a>
+                    </li>
+                }
+                <li>
+                    <a class="textlink" href="/@Model.Slug/userlogout"><i class="zmdi zmdi-arrow-left zmdi-hc-fw"></i>  Log Out</a>
+                </li>
+                <li class="hm-profile">
+                    <a class="userAvatar" href="/@Model.Slug/dashboard#">
+                        <img ng-src="{{layout.currentUser.media.fullUrl || 'https://sabio-training.s3.amazonaws.com/C28/8b11acd2d886468984630af8cb8c136a.jpg' }}" alt="Avatar">
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li>
+                    <a class="textlink" href="/@Model.Slug/register"><i class="zmdi zmdi-zmdi zmdi-assignment-account"></i>  Register</a> <!--need to add slugs to links for register /{slug}/login-->
+                </li>
+                <li>
+                    <a class="textlink" href="/@Model.Slug/login"><i class="zmdi zmdi-zmdi zmdi-account zmdi-hc-fww"></i>  Login </a> <!--need to add slugs to links for login /{slug}/login-->
+                </li>
+            }
+
+        </ul>
+
+    </header>
+    
+    <script type="text/ng-template" id="modalTemplate.html" >
+
+    <div class="modal-header">
+        <h3 class="modal-title">Would you like to login or continues as a guest?</h3>
+    </div>
+    <div class="modal-body">
+    </div>
+    <div class="modal-footer">
+        <a class="btn btn-primary" href="/@Model.Slug/login">Login</a>
+        <a class="btn btn-primary" href="/@Model.Slug/job">Continue As Guest</a>
+    </div>
+    </script>
+
+
+    <div class="container">
+        @RenderBody()
+    </div>
+
+
+    <footer id="footer">
+        Copyright &copy; 2017 bringpro
+
+        <ul class="f-menu">
+            <li><a href="/@Model.Slug/home">Home</a></li>
+            <li><a href="/@Model.Slug/home">Dashboard</a></li>
+            <li><a href="/@Model.Slug/home">Reports</a></li>
+            <li><a href="/@Model.Slug/home">Support</a></li>
+            <li><a href="/@Model.Slug/contact">Contact</a></li>
+        </ul>
+    </footer>
+
+    <script type="application/json" id="currentUser">
+        @if (Model != null && Model.User != null)
+        {
+            @Html.RawJson(Model.User);
+        }
+    </script>
+
+    <script type="application/json" id="currentWebsite">
+        @if (Model != null && Model.Website != null)
+        {
+            @Html.RawJson(Model.Website);
+        }
+    </script>
+
+    <script type="text/javascript">
+        var APPNAME = 'bringproApp';
+
+    </script>
+    @Scripts.Render("~/bower/core")
+
+    <script src="~/Scripts/sabio.js"></script>
+
+    @RenderSection("pageInitScripts", required: false)
+    @Scripts.Render("~/bringpro/core")
+
+
+    @Scripts.Render("~/Themes/bringpro/services")
+
+    @Scripts.Render("~/Themes/Material-Admin")
+
+    @RenderSection("scripts", required: false)
+
+
+    <script type="text/javascript">
+
+        // ANGULAR \\
+
+        //service
+        (function () {
+            "use strict";
+            console.log('mic check ng');
+
+            angular.module(APPNAME)
+            .factory('$frontEndLayoutService', frontEndLayoutServiceFactory);
+
+            frontEndLayoutServiceFactory.$inject = ['$baseService', '$sabio'];
+
+            function frontEndLayoutServiceFactory($baseService, $sabio) {
+                console.log('frontEndLayoutServiceFactory: firing');
+                var frontEndLayoutServiceObject = sabio.services.dashboard;
+
+                var newService = $baseService.merge(true, {}, frontEndLayoutServiceObject, $baseService);
+
+                return newService;
+
+            }
+
+
+        })();
+
+
+        //controller -
+        (function () {
+            "use strict";
+
+            angular
+            .module(APPNAME)
+
+            .controller('frontEndLayoutController', frontEndLayoutController);
+
+            frontEndLayoutController.$inject = ['$scope', '$baseController', '$frontEndLayoutService', 'toastr', '$uibModal'];
+
+
+            function frontEndLayoutController(
+                  $scope
+                , $baseController
+                , $frontEndLayoutService
+                , toastr
+                , $uibModal) {
+
+
+                var vm = this;
+                vm.events = null;
+                console.log('view model firing');
+                vm.requestButton = null;
+                vm.openModal = _openModal;
+                //injections
+                vm.$scope = $scope;
+                vm.$baseController = $baseController;
+                vm.$frontEndLayoutService = $frontEndLayoutService;
+                vm.$uibModal = $uibModal;
+                //simulate inheritance
+                $baseController.merge(vm, $baseController);
+                vm.notify = vm.$frontEndLayoutService.getNotifier($scope);
+
+
+                _load();
+
+                function _load() {
+                    console.log('frontEndLayoutController: firing');
+                    vm.$systemEventService.listen("userUpdated", _onTestSystemEvent);
+                    vm.events = [];
+
+                };
+
+                function _onTestSystemEvent(event, payload) {
+
+                    var events = payload[1];
+
+                    console.log("on TEST system event", events);
+
+                    vm.events.unshift(events);
+
+                    // do an ajax call
+                    console.log('this is vm.$frontEndLayoutService', vm.$frontEndLayoutService);
+                    vm.$frontEndLayoutService.getUserInfo(_onGetUserInfoSuccess, _onGetUserInfoFail);
+                };
+
+                // function on success
+                function _onGetUserInfoSuccess(data) {
+                    vm.notify(function () {
+                        console.log('this is data: ', data);
+                        vm.currentUser = data.item;
+                    });
+                };
+
+                function _onGetUserInfoFail() {
+                    console.log("Get user info did now work :(");
+                };
+
+                //modal functions for button route
+                function _openModal(requestButton) {
+                    console.log("Current Coupon Id:", requestButton)
+                    //vm.requestButton = requestButton;
+                    var modalInstance = vm.$uibModal.open({
+                        animation: true,
+                        templateUrl: 'modalTemplate.html',
+                        controller: 'modalController as mc',
+                        size: 'lg',
+                        resolve: {
+                            items: function () {
+                                return requestButton;
+                            }
+                        }
+                    });
+                    //modalInstance.result.then(function () {
+                    //    vm.$couponService.couponDelete(vm.currentId, vm.submitSuccess, vm.onError);
+                    //}, function () {
+                    //    console.log('Modal dismissed at: ' + new Date());
+                    //});
+                };
+
+
+            }
+        })();
+
+        (function () {
+            "use strict";
+
+            angular.module(APPNAME)
+                .controller('modalController', ModalController);
+
+            ModalController.$inject = ['$scope', '$baseController', '$uibModalInstance', 'requestButton', '$frontEndLayoutService', 'items']
+
+            function ModalController(
+                $scope
+                , $baseController
+                , $uibModalInstance
+                , requestButton
+                , $frontEndLayoutService
+                , items) {
+                var vm = this;
+
+                $baseController.merge(vm, $baseController);
+
+                vm.$scope = $scope;
+                vm.$uibModalInstance = $uibModalInstance;
+                vm.requestButton = requestButton;
+                vm.$frontEndLayoutService = $frontEndLayoutService;
+                vm.items = items;
+
+                vm.ok = function () {
+                    vm.$uibModalInstance.close();
+
+                };
+
+                vm.cancel = function () {
+                    vm.$uibModalInstance.dismiss('cancel');
+                };
+            }
+
+
+
+
+        })();
+
+    </script>
+
+
+</body>
+</html>
