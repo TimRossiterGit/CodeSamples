@@ -1,32 +1,34 @@
-﻿using Sabio.Web.Domain;
-using Sabio.Web.Enums;
-using Sabio.Web.Services;
+﻿using Bringpro.Web.Domain;
+using Bringpro.Web.Enums;
+using Bringpro.Web.Services;
 using System.Collections.Generic;
 
-namespace Sabio.Web.Models.ViewModels
+namespace Bringpro.Web.Models.ViewModels
 {
     public class WebsiteViewModel : BaseViewModel
     {
         public string Item { get; set; }
         public string Slug { get; set; }
+        //Enums
         public SettingsCategory CategoryEnum { get; set; }
         public SettingsType SettingTypeEnum { get; set; }
         public SettingsSection SettingSectionEnum { get; set; }
         public List<WebsiteSettings> Settings { get; set; }
-        //trying to get token hash for register
+        //get token hash for register
         public string TokenHash { get; set; }
+        //Website Object
         public Website Website { get; set; }
         //from dashboard view model
         public ActivityTypeId ActivityTypes { get; set; }
+        //Login Tokens
         public string Token { get; set; }
         public Token userToken { get; set; }
-        //
-        public string BrainTreeToken { get; set; }
-      
+        public string BrainTreeToken { get; set; }      
         //for Job Item Invoice information
         public int jobInvoiceId { get; set; }
         public string GoogleStaticMapKey = ConfigService.GoogleStaticMapApiKey;
 
+        //Return the Media Url
         public string GetImageValueBySettingSlug(string settingSlug)
         {
             WebsiteSettings websiteSettings = GetSettingBySettingSlug(settingSlug);

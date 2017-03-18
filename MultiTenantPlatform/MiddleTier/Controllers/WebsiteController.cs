@@ -1,19 +1,18 @@
 ﻿using Microsoft.Practices.Unity;
-using Sabio.Web.Domain;
-using Sabio.Web.Enums;
-using Sabio.Web.Models.ViewModels;
-using Sabio.Web.Services;
-using Sabio.Web.Services.Interfaces;
+using Bringpro.Web.Domain;
+using Bringpro.Web.Enums;
+using Bringpro.Web.Models.ViewModels;
+using Bringpro.Web.Services;
+using Bringpro.Web.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Web;
 using System.Web.Mvc;
-using Sabio.Web.Classes.Filter.Api;
+using Bringpro.Web.Classes.Filter.Api;
 
-namespace Sabio.Web.Controllers
+namespace Bringpro.Web.Controllers
 {
-
-    //[WebsiteActionFilter] //this is like the [Authorize] filter but custom made.
+    [WebsiteActionFilter] //this is like the [Authorize] filter but custom made.
     public class WebsiteController : BaseController
     {
         //dependency from dashboard controller
@@ -29,25 +28,11 @@ namespace Sabio.Web.Controllers
         public ActionResult Index(string Slug)
         {
             WebsiteViewModel vm = _GetViewModel(Slug);
-            //WebsiteViewModel vm = new WebsiteViewModel();
+          
             //access the same httpcontext
             vm.Website = (Website)Request.RequestContext.RouteData.Values["Website"];
 
-            //if (vm.Website == null && Slug == null)
-            //{
-            //    //redirect to somthing else.. for now, return to bringpro
-            //    Slug = "bringpro";
-
-            //}
-            //else if (Slug == null)
-            //{
-            //    Slug = vm.Website.Slug;
-            //}
-
-
-
             return View(vm);
-
         }
 
         //// GET: Website LOGIN by Slug
@@ -71,16 +56,6 @@ namespace Sabio.Web.Controllers
             return View(vm);
         }
 
-
-        //[Route("ConfirmSMS/{userId}")]
-        //public ActionResult ConfirmSMS(string userId)
-        //{
-        //    ItemViewModel<string> vm = new ItemViewModel<string>();
-        //    vm.Item = userId;
-        //    return View(vm);
-        //}
-
-
         [Route("{Slug}/passwordreset")]
         public ActionResult PasswordResetFrontEnd(string Slug)
         {
@@ -91,7 +66,7 @@ namespace Sabio.Web.Controllers
 
         //// GET: Website passwrdreset by Slug
         [Route("{Slug}/passwordauthentication/{emailGuid:guid}")]
-        public ActionResult PasswordChangeConfirmFrontEnd(Guid emailGuid, string Slug)    //  this cannot be null
+        public ActionResult PasswordChangeConfirmFrontEnd(Guid emailGuid, string Slug)
         {
             WebsiteViewModel vm = _GetViewModel(Slug);
 
@@ -136,14 +111,12 @@ namespace Sabio.Web.Controllers
         //DASHBOARD CONTROLLERS FOR CUSTOMERS
         // GET: Dashboard
 
-        //[Route]
         [InvoiceAuthorizationFilter]
         [Route("{Slug}/dashboard")]
         public ActionResult DashboardIndex(string Slug)
         {
             WebsiteViewModel vm = _GetViewModel(Slug);
 
-            // DashboardViewModel vm = new DashboardViewModel();
             vm.ActivityTypes = ActivityTypeId.NewAccount;
             vm.Token = _BrainTreeService.CreateToken();
             return View("DashboardHome", vm);

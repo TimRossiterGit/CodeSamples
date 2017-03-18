@@ -41,11 +41,6 @@ namespace Sabio.Web.Services
                   ws.DateAdded = reader.GetSafeDateTime(startingIndex++);
                   ws.DateModified = reader.GetSafeDateTime(startingIndex++);
 
-                  //if (ws.Id != 0)
-                  //{
-                  //    c.WebsiteSettings = ws;
-                  //}
-
                   Website c = new Website();
 
                   c.Id = reader.GetSafeInt32(startingIndex++);
@@ -57,8 +52,7 @@ namespace Sabio.Web.Services
                   c.DateCreated = reader.GetSafeDateTime(startingIndex++);
                   c.DateModified = reader.GetSafeDateTime(startingIndex++);
                   c.Phone = reader.GetSafeString(startingIndex++);
-                  //c.ExternalTeamId = reader.GetSafeInt32(startingIndex++);
-                  //c.AddressId = reader.GetSafeInt32(startingIndex++);
+
 
                   if (c.Id != 0)
                   {
@@ -94,13 +88,12 @@ namespace Sabio.Web.Services
                   m.FileType = reader.GetSafeString(startingIndex++);
                   m.DateCreated = reader.GetSafeDateTime(startingIndex++);
                   m.DateModified = reader.GetSafeDateTime(startingIndex++);
-                  //m.fullUrl = reader.GetSafeString(startingIndex++); // might be problem, set as return value not get set
+
 
                   if (m.Id != 0)
                   {
                       ws.Media = m;
                   }
-
 
 
                   if (list == null)
@@ -262,10 +255,6 @@ namespace Sabio.Web.Services
                       ws.DateAdded = reader.GetSafeDateTime(startingIndex++);
                       ws.DateModified = reader.GetSafeDateTime(startingIndex++);
 
-                      //if (ws.Id != 0)
-                      //{
-                      //    c.WebsiteSettings = ws;
-                      //}
 
                       Website c = new Website();
 
@@ -278,8 +267,7 @@ namespace Sabio.Web.Services
                       c.DateCreated = reader.GetSafeDateTime(startingIndex++);
                       c.DateModified = reader.GetSafeDateTime(startingIndex++);
                       c.Phone = reader.GetSafeString(startingIndex++);
-                      //c.ExternalTeamId = reader.GetSafeInt32(startingIndex++);
-                      //c.AddressId = reader.GetSafeInt32(startingIndex++);
+
 
                       if (c.Id != 0)
                       {
@@ -315,13 +303,12 @@ namespace Sabio.Web.Services
                       m.FileType = reader.GetSafeString(startingIndex++);
                       m.DateCreated = reader.GetSafeDateTime(startingIndex++);
                       m.DateModified = reader.GetSafeDateTime(startingIndex++);
-                      //m.fullUrl = reader.GetSafeString(startingIndex++); // might be problem, set as return value not get set
+
 
                       if (m.Id != 0)
                       {
                           ws.Media = m;
                       }
-
 
 
                       if (list == null)
@@ -442,8 +429,6 @@ namespace Sabio.Web.Services
                 inputParamMapper: delegate (SqlParameterCollection paramCollection)
                 {
                     paramCollection.AddWithValue("@Id", Id);
-                    //paramCollection.AddWithValue("@SettingsId", model.SettingsId);
-                    //paramCollection.AddWithValue("@WebsiteId", model.WebsiteId);
                     paramCollection.AddWithValue("@SettingsValue", model.SettingsValue);
                     paramCollection.AddWithValue("@UserId", model.UserId);
                     paramCollection.AddWithValue("@MediaId", model.MediaId);
@@ -467,7 +452,7 @@ namespace Sabio.Web.Services
               });
         }
 
-        //with the joined tables
+
         public static List<WebsiteSettings> GetByWebId(int Id)
         {
             List<WebsiteSettings> WsList = null;
@@ -502,8 +487,6 @@ namespace Sabio.Web.Services
                   w.MediaId = reader.GetSafeInt32(startingIndex++);
                   w.DateCreated = reader.GetSafeDateTime(startingIndex++);
                   w.DateModified = reader.GetSafeDateTime(startingIndex++);
-                  //w.BackgroundColor = reader.GetSafeString(startingIndex++);
-                  //w.HeaderColor = reader.GetSafeString(startingIndex++);
 
                   ws.Website = w;
 

@@ -1,10 +1,10 @@
 ﻿using Microsoft.Practices.Unity;
-using Sabio.Web.Domain;
-using Sabio.Web.Domain.Tests;
-using Sabio.Web.Models.Requests;
-using Sabio.Web.Models.Responses;
-using Sabio.Web.Services;
-using Sabio.Web.Services.Interfaces;
+using Bringpro.Web.Domain;
+using Bringpro.Web.Domain.Tests;
+using Bringpro.Web.Models.Requests;
+using Bringpro.Web.Models.Responses;
+using Bringpro.Web.Services;
+using Bringpro.Web.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,18 +13,17 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 
-namespace Sabio.Web.Controllers.Api
+namespace Bringpro.Web.Controllers.Api
 {
     [RoutePrefix("api/website")]
     public class WebsiteAPIController : ApiController
     {
         [Dependency]
-        public IWebsiteService _WebsiteService { get; set; }
+        public IWebsiteService _WebsiteService { get; set; } //Dependency Injection for Website Service
 
         [Route(), HttpGet]
         public HttpResponseMessage List()
         {
-
             ItemsResponse<Website> response = new ItemsResponse<Website>();
             response.Items = WebsiteService.websiteGetAll();
             return Request.CreateResponse(response);
@@ -39,20 +38,16 @@ namespace Sabio.Web.Controllers.Api
             }
 
             ItemResponse<int> response = new ItemResponse<int>();
-           // WebsiteService WebsiteService = new WebsiteService();
             response.Item = await _WebsiteService.websiteInsert(model);
             return Request.CreateResponse(response);
-
         }
 
         [Route("{id:int}"), HttpGet]
         public HttpResponseMessage GetById(int id)
         {
-
             ItemResponse<Website> response = new ItemResponse<Website>();
             response.Item = _WebsiteService.websiteGetById(id);
             return Request.CreateResponse(response);
-
         }
 
         [Route("{id:int}"), HttpPut]
@@ -66,11 +61,6 @@ namespace Sabio.Web.Controllers.Api
 
             model.Id = id;
 
-            // - Instantiate a BlogService variable (Not Needed as Put is Static now)
-            //WebsiteService blogService = new WebsiteService();
-
-            // - Create and call a BlogUpdate method in the BlogService
-           // WebsiteService WebsiteService = new WebsiteService();
             bool isSuccessful = await _WebsiteService.websiteUpdate(model);
 
             // - Instantiate an ItemResponse Model to send back to the browser
@@ -102,7 +92,8 @@ namespace Sabio.Web.Controllers.Api
             ItemsResponse<WebsiteSettings> response = new ItemsResponse<WebsiteSettings>();
 
             WebsiteSettingsServices websiteService = new WebsiteSettingsServices();
-
+            
+            //generate a list of website settings
             List<WebsiteSettings> WebsiteBySlug = websiteService.GetSettingsBySlug(Slug);
 
             response.Items = WebsiteBySlug;

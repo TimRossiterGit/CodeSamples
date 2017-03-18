@@ -1,11 +1,9 @@
-﻿@model Sabio.Web.Models.ViewModels.WebsiteViewModel
-
-
+﻿@model Sabio.Web.Models.ViewModels.WebsiteViewModel @*The ViewModel that loads all the settings assigned to specific website*@
 
 
 <!DOCTYPE html>
 <html data-ng-app="bringproApp">
-<!--[if IE 9 ]><html class="ie9"><![endif]-->
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -20,18 +18,7 @@
         <title>@Model.Website.Name</title>
     }
 
-    <!-- Vendor CSS -->
-    <link href="~/Assets/bower_components/angular-toastr/dist/angular-toastr.css" rel="stylesheet" />
-    <link href="~/Assets/Themes/Material-Admin/vendors/bower_components/animate.css/animate.min.css" rel="stylesheet" />
-    <link href="~/Assets/Themes/Material-Admin/vendors/bower_components/material-design-iconic-font/dist/css/material-design-iconic-font.min.css" rel="stylesheet" />
-    <link href="~/Assets/Themes/Material-Admin/vendors/bower_components/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.min.css" rel="stylesheet" />
-    <link href="~/Assets/Themes/Material-Admin/vendors/bower_components/google-material-color/dist/palette.css" rel="stylesheet" />
-
-
-    <link href="~/Assets/Themes/Material-Admin/css/app.min.1.css" rel="stylesheet" />
-    <link href="~/Assets/Themes/Material-Admin/css/app.min.2.css" rel="stylesheet" />
-    <link href="~/Assets/Themes/bringpro/css/bringProFrontEnd.css" rel="stylesheet" />
-
+    @*Style tags added to apply settings to the css - identified and labeled by slugs*@
     <style>
         #header {
             margin-bottom: 0px;
@@ -68,7 +55,6 @@
 
     </style>
 
-
 </head>
 
 
@@ -76,7 +62,7 @@
     <header id="header" class="media">
 
         <div class="pull-left h-logo col-md-8">
-            <a href="/@Model.Slug/home" class="hidden-xs">
+            <a href="/@Model.Slug/home" class="hidden-xs"> @*Navigating by Slug*@ 
                 <img class="default-logo"
                      src="@Model.GetImageValueBySettingSlug("header-logo-image")" />
             </a>
@@ -148,6 +134,7 @@
         </ul>
     </footer>
 
+    @*Loading the current User object on the page*@
     <script type="application/json" id="currentUser">
         @if (Model != null && Model.User != null)
         {
@@ -155,6 +142,7 @@
         }
     </script>
 
+    @*Loading the current Website object*@
     <script type="application/json" id="currentWebsite">
         @if (Model != null && Model.Website != null)
         {
@@ -162,22 +150,18 @@
         }
     </script>
 
+
     <script type="text/javascript">
         var APPNAME = 'bringproApp';
-
     </script>
+
+
     @Scripts.Render("~/bower/core")
-
     <script src="~/Scripts/sabio.js"></script>
-
     @RenderSection("pageInitScripts", required: false)
     @Scripts.Render("~/bringpro/core")
-
-
     @Scripts.Render("~/Themes/bringpro/services")
-
     @Scripts.Render("~/Themes/Material-Admin")
-
     @RenderSection("scripts", required: false)
 
 
@@ -188,7 +172,7 @@
         //service
         (function () {
             "use strict";
-            console.log('mic check ng');
+            console.log('frontEndLayoutService: firing');
 
             angular.module(APPNAME)
             .factory('$frontEndLayoutService', frontEndLayoutServiceFactory);
@@ -202,10 +186,7 @@
                 var newService = $baseService.merge(true, {}, frontEndLayoutServiceObject, $baseService);
 
                 return newService;
-
-            }
-
-
+            }            
         })();
 
 
@@ -219,7 +200,6 @@
             .controller('frontEndLayoutController', frontEndLayoutController);
 
             frontEndLayoutController.$inject = ['$scope', '$baseController', '$frontEndLayoutService', 'toastr', '$uibModal'];
-
 
             function frontEndLayoutController(
                   $scope
@@ -242,7 +222,6 @@
                 //simulate inheritance
                 $baseController.merge(vm, $baseController);
                 vm.notify = vm.$frontEndLayoutService.getNotifier($scope);
-
 
                 _load();
 
@@ -292,15 +271,8 @@
                                 return requestButton;
                             }
                         }
-                    });
-                    //modalInstance.result.then(function () {
-                    //    vm.$couponService.couponDelete(vm.currentId, vm.submitSuccess, vm.onError);
-                    //}, function () {
-                    //    console.log('Modal dismissed at: ' + new Date());
-                    //});
+                    });              
                 };
-
-
             }
         })();
 
@@ -338,9 +310,6 @@
                     vm.$uibModalInstance.dismiss('cancel');
                 };
             }
-
-
-
 
         })();
 

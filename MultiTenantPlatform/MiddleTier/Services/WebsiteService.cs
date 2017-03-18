@@ -1,10 +1,10 @@
 ﻿using Microsoft.Practices.Unity;
-using Sabio.Data;
-using Sabio.Web.Classes.Tasks.Bringg.Interfaces;
-using Sabio.Web.Domain;
-using Sabio.Web.Models.Requests;
-using Sabio.Web.Models.Requests.Bringg;
-using Sabio.Web.Services.Interfaces;
+using Bringpro.Data;
+using Bringpro.Web.Classes.Tasks.Bringg.Interfaces;
+using Bringpro.Web.Domain;
+using Bringpro.Web.Models.Requests;
+using Bringpro.Web.Models.Requests.Bringg;
+using Bringpro.Web.Services.Interfaces;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -12,7 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 
-namespace Sabio.Web.Services
+namespace Bringpro.Web.Services
 {
     public class WebsiteService : BaseService, IWebsiteService
     {
@@ -92,9 +92,6 @@ namespace Sabio.Web.Services
             }
             );
 
-
-
-
             return id;
         }
 
@@ -143,14 +140,13 @@ namespace Sabio.Web.Services
                   m.Description = reader.GetSafeString(startingIndex++);
                   m.ExternalMediaId = reader.GetSafeInt32(startingIndex++);
                   m.FileType = reader.GetSafeString(startingIndex++);
-                  //m.fullUrl = reader.GetSafeString(startingIndex++); // might be problem, set as return value not get set
 
                   if (m.Id != 0)
                   {
                       c.Media = m;
                   }
 
-                  Sabio.Web.Domain.Address a = new Sabio.Web.Domain.Address();
+                  Bringpro.Web.Domain.Address a = new Bringpro.Web.Domain.Address();
 
                   a.AddressId = reader.GetSafeInt32(startingIndex++);
                   a.DateCreated = reader.GetSafeDateTime(startingIndex++);
@@ -176,8 +172,6 @@ namespace Sabio.Web.Services
               }
 
            );
-
-
             return c;
         }
 
@@ -224,7 +218,7 @@ namespace Sabio.Web.Services
                       c.Media = m;
                   }
 
-                  Sabio.Web.Domain.Address a = new Sabio.Web.Domain.Address();
+                  Bringpro.Web.Domain.Address a = new Bringpro.Web.Domain.Address();
 
                   a.AddressId = reader.GetSafeInt32(startingIndex++);
                   a.DateCreated = reader.GetSafeDateTime(startingIndex++);

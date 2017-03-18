@@ -1,7 +1,7 @@
-﻿using Sabio.Web.Domain;
-using Sabio.Web.Models.Requests;
-using Sabio.Web.Models.Responses;
-using Sabio.Web.Services;
+﻿using Bringpro.Web.Domain;
+using Bringpro.Web.Models.Requests;
+using Bringpro.Web.Models.Responses;
+using Bringpro.Web.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 
-namespace Sabio.Web.Controllers.Api
+namespace Bringpro.Web.Controllers.Api
 {
     [RoutePrefix("api/websitesettings")]
     public class WebsiteSettingsApiController : ApiController
@@ -18,7 +18,6 @@ namespace Sabio.Web.Controllers.Api
         [Route("get"), HttpGet]
         public HttpResponseMessage List()
         {
-
             ItemsResponse<WebsiteSettings> response = new ItemsResponse<WebsiteSettings>();
             List<WebsiteSettings> wsList = WebsiteSettingsServices.Get();
             response.Items = WebsiteSettingsServices.Get();
@@ -53,11 +52,9 @@ namespace Sabio.Web.Controllers.Api
         [Route("get/{Id:int}"), HttpGet]
         public HttpResponseMessage GetById(int Id)
         {
-
             ItemResponse<WebsiteSettings> response = new ItemResponse<WebsiteSettings>();
             response.Item = WebsiteSettingsServices.GetById(Id);
             return Request.CreateResponse(response);
-
         }
 
         [Route("delete/{Id:int}"), HttpDelete]
@@ -73,11 +70,11 @@ namespace Sabio.Web.Controllers.Api
         public HttpResponseMessage GetByWebId(int Id)
         {
             ItemsResponse<WebsiteSettings> response = new ItemsResponse<WebsiteSettings>();
-           // List<WebsiteSettings> allList = WebsiteSettingsServices.Get();
             response.Items = WebsiteSettingsServices.GetByWebId(Id);
             return Request.CreateResponse(response);
         }
 
+        //Get Website Settings By Slug w/Pagination and Filtering
         [Route("getBySlug/{Slug}"), HttpGet]
         public HttpResponseMessage GetBySlug([FromUri] PaginatedRequest model)
         {
@@ -86,13 +83,13 @@ namespace Sabio.Web.Controllers.Api
             {
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
             }
+
+            //Pagination
             PaginatedItemsResponse<WebsiteSettings> response = WebsiteSettingsServices.GetSettingsByQuery(model);
-            //ItemsResponse<WebsiteSettings> response = new ItemsResponse<WebsiteSettings>();
+       
             response.CurrentPage = model.CurrentPage;
             response.ItemsPerPage = model.ItemsPerPage;
-          
-            //WebsiteSettingsServices newModel = new WebsiteSettingsServices();
-            //response.Items = WebsiteSettingsServices.GetSettingsByQuery(model);
+
             return Request.CreateResponse(response);
         }
     }

@@ -1,15 +1,12 @@
-﻿@model Sabio.Web.Models.ViewModels.WebsiteViewModel
+﻿@model Sabio.Web.Models.ViewModels.WebsiteViewModel @*Loading the Website Model on Page load*@
 
 @{
     ViewBag.Title = "LoginFrontEnd";
     Layout = "~/Views/Shared/_LayoutFrontEnd.cshtml";
-
-   
+      
 }
 
 <input type="hidden" id="websiteSlugId" value="@Model.Slug" />
-
-
 
 <style>
       .login {
@@ -84,8 +81,7 @@
 
                     <button type="submit" class="btn palette-Teal bg waves-effect loginButton" ng-disabled="loginForm.$invalid">Sign in</button>
 
-                    <div class="m-t-20">
-                        @*<a data-block="#l-register" data-bg="blue" class="palette-Teal text d-block m-b-5" href="~/Public/RegisterUser">Create an account</a>*@
+                    <div class="m-t-20">                     
                         <a class="palette-Teal text d-block m-b-5" href="/@Model.Slug/Register">Create an account</a>
                         <a href="/@Model.Slug/passwordreset" class="palette-Teal text">Forgot password?</a>
                     </div>
@@ -108,14 +104,7 @@
     <script src="~/Assets/App/Services/sabio.services.websiteSettings.js"></script>
 
     <script src="~/Assets/App/Services/sabio.services.user.js"></script>
-
-    <script type="text/javascript">
-         //Test For BringgApi, leave in here.
-         //sabio.services.user.insertNewBringgUser("{}", sabio.page.handlers.insertNewBringgUserSuccess, sabio.page.handlers.insertNewBringgUserError);
-
-    </script>
-
-
+    
     <script type="text/javascript">
 
         // ANGULAR \\
@@ -148,15 +137,12 @@
         (function () {
             "use strict";
 
-
-
             angular
             .module(APPNAME)
 
             .controller('loginController', loginController);
 
             loginController.$inject = ['$scope', '$baseController', '$loginService', '$location'];
-
 
             function loginController(
                   $scope
@@ -177,15 +163,12 @@
                 vm.loginSuccess = _loginSuccess;
                 //simulate inheritance
                 $baseController.merge(vm, $baseController);
-                //
                 vm.notify = vm.$loginService.getNotifier($scope);
                 //regex setting for password validation
-                vm.regex = /(?=.*[!@@#\$%\^&\*])(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])/;
+                vm.regex = /(?=.*[!@@#\$%\^&\*])(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])/;               
 
-               
-
+                //FUNCTIONS
                 function _submitLogin() {
-
                     console.log('loginPayload:', vm.loginPayload);
                     vm.$loginService.login(vm.loginPayload, vm.loginSuccess, vm.loginError);
                 };
