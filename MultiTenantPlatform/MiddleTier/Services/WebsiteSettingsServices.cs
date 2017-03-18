@@ -1,8 +1,8 @@
-﻿using Sabio.Data;
-using Sabio.Web.Domain;
-using Sabio.Web.Enums;
-using Sabio.Web.Models.Requests;
-using Sabio.Web.Models.Responses;
+﻿using Bringpro.Data;
+using Bringpro.Web.Domain;
+using Bringpro.Web.Enums;
+using Bringpro.Web.Models.Requests;
+using Bringpro.Web.Models.Responses;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -10,7 +10,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 
-namespace Sabio.Web.Services
+namespace Bringpro.Web.Services
 {
     public class WebsiteSettingsServices : BaseService
     {
