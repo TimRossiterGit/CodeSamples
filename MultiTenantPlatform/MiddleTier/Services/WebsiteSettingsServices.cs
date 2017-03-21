@@ -12,27 +12,27 @@ using System.Web;
 
 namespace Bringpro.Web.Services
 {
-    public class WebsiteSettingsServices : BaseService
+    public class WebsiteSettingsServices : BaseService // extending from base service class
     {
 
-        // Get by website slug - website, media, address
+        // get website settings by website slug
         public List<WebsiteSettings> GetSettingsBySlug(string Slug)
         {
-            List<WebsiteSettings> list = null;
+            List<WebsiteSettings> list = null; //create empty list of website settings
 
-            DataProvider.ExecuteCmd(GetConnection, "dbo.WebsiteSettings_GetByWebsiteSlug"
+            DataProvider.ExecuteCmd(GetConnection, "dbo.WebsiteSettings_GetByWebsiteSlug" // connection to sql stored proc
               , inputParamMapper: delegate (SqlParameterCollection paramCollection)
               {
-                  paramCollection.AddWithValue("@Slug", Slug);
+                  paramCollection.AddWithValue("@Slug", Slug); // input the slug into sql stored proc
 
-
+                  //the return from sql
               }, map: delegate (IDataReader reader, short set)
               {
-                  int startingIndex = 0;
+                  int startingIndex = 0; // starting ordinal
 
-                  WebsiteSettings ws = new WebsiteSettings();
+                  WebsiteSettings ws = new WebsiteSettings(); // instantiate new website settings object
 
-                  ws.Id = reader.GetSafeInt32(startingIndex++);
+                  ws.Id = reader.GetSafeInt32(startingIndex++); //assign website settings vales to website object
                   ws.SettingsId = reader.GetSafeInt32(startingIndex++);
                   ws.WebsiteId = reader.GetSafeInt32(startingIndex++);
                   ws.SettingsValue = reader.GetSafeString(startingIndex++);
@@ -41,9 +41,9 @@ namespace Bringpro.Web.Services
                   ws.DateAdded = reader.GetSafeDateTime(startingIndex++);
                   ws.DateModified = reader.GetSafeDateTime(startingIndex++);
 
-                  Website c = new Website();
+                  Website c = new Website(); // instantiate a new website object
 
-                  c.Id = reader.GetSafeInt32(startingIndex++);
+                  c.Id = reader.GetSafeInt32(startingIndex++); // assign website values to website object
                   c.Name = reader.GetSafeString(startingIndex++);
                   c.Slug = reader.GetSafeString(startingIndex++);
                   c.Description = reader.GetSafeString(startingIndex++);
@@ -54,14 +54,14 @@ namespace Bringpro.Web.Services
                   c.Phone = reader.GetSafeString(startingIndex++);
 
 
-                  if (c.Id != 0)
+                  if (c.Id != 0) // null check to see if website has values
                   {
-                      ws.Website = c;
+                      ws.Website = c; // if website has values, assign to website settings object
                   }
 
-                  Settings s = new Settings();
+                  Settings s = new Settings(); // instantiate a new instance of settings object
 
-                  s.Id = reader.GetSafeInt32(startingIndex++);
+                  s.Id = reader.GetSafeInt32(startingIndex++); // assign settings values to settings object
                   s.Category = reader.GetSafeEnum<SettingsCategory>(startingIndex++);
                   s.Name = reader.GetSafeString(startingIndex++);
                   s.DateCreated = reader.GetSafeDateTime(startingIndex++);
@@ -71,14 +71,14 @@ namespace Bringpro.Web.Services
                   s.SettingSlug = reader.GetSafeString(startingIndex++);
                   s.SettingSection = reader.GetSafeEnum<SettingsSection>(startingIndex++);
 
-                  if (s.Id != 0)
+                  if (s.Id != 0) // null check to see if settings return values
                   {
-                      ws.Setting = s;
+                      ws.Setting = s; // assign returned values to website settings object
                   }
 
-                  Media m = new Media();
+                  Media m = new Media(); // instantiate a new media object
 
-                  m.Id = reader.GetSafeInt32(startingIndex++);
+                  m.Id = reader.GetSafeInt32(startingIndex++); //assign media values to media object
                   m.Url = reader.GetSafeString(startingIndex++);
                   m.MediaType = reader.GetSafeInt32(startingIndex++);
                   m.UserId = reader.GetSafeString(startingIndex++);
@@ -90,23 +90,23 @@ namespace Bringpro.Web.Services
                   m.DateModified = reader.GetSafeDateTime(startingIndex++);
 
 
-                  if (m.Id != 0)
+                  if (m.Id != 0) // null check to see if media returned values
                   {
-                      ws.Media = m;
+                      ws.Media = m; // assign returned media values to website settings object
                   }
 
 
-                  if (list == null)
+                  if (list == null) // null check to see if list has any alues
                   {
-                      list = new List<WebsiteSettings>();
+                      list = new List<WebsiteSettings>(); // instantiate a new website settings object list
                   }
 
-                  list.Add(ws);
+                  list.Add(ws); // add website settings object to list
               }
 
            );
 
-            return list;
+            return list; // return list of website settings objects
         }
 
 

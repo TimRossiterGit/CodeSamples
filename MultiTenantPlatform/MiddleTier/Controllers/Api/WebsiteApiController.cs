@@ -84,7 +84,7 @@ namespace Bringpro.Web.Controllers.Api
         [Route("{Slug}"), HttpGet]
         public HttpResponseMessage GetSettingsBySlug(string Slug)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) // check for valid model
             {
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
             }

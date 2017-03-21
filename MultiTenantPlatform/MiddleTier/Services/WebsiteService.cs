@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Bringpro.Web.Services
 {
-    public class WebsiteService : BaseService, IWebsiteService
+    public class WebsiteService : BaseService, IWebsiteService // inheritance from base service and website service interface
     {
 
         [Dependency]
@@ -22,17 +22,17 @@ namespace Bringpro.Web.Services
         [Dependency]
         public IEmailCampaignsService _CampaignsService { get; set; }
 
-
+        //get all websites and values as a list
         public static List<Website> websiteGetAll()
         {
 
             List<Website> list = null;
-            DataProvider.ExecuteCmd(GetConnection, "dbo.Website_SelectAll"
+            DataProvider.ExecuteCmd(GetConnection, "dbo.Website_SelectAll" //sql stored proc connection
              , inputParamMapper: null
              , map: delegate (IDataReader reader, short set)
              {
                  Website c = new Website();
-                 int startingIndex = 0; //startingOrdinal
+                 int startingIndex = 0; //starting Ordinal
 
                  c.Id = reader.GetSafeInt32(startingIndex++);
                  c.Name = reader.GetSafeString(startingIndex++);
@@ -45,14 +45,14 @@ namespace Bringpro.Web.Services
                  c.Phone = reader.GetSafeString(startingIndex++);
                  c.AddressId = reader.GetSafeInt32(startingIndex++);
 
-                 if (list == null)
+                 if (list == null) //null checks
                  {
-                     list = new List<Website>();
+                     list = new List<Website>(); //instatiate a new instance of website list
                  }
-                 list.Add(c);
+                 list.Add(c); // add websites to list
              }
              );
-            return list;
+            return list; // returns list
         }
 
         public async Task<int> websiteInsert(WebsiteAddRequest model)
@@ -98,21 +98,21 @@ namespace Bringpro.Web.Services
         // Get by website id - website, media, address
         public Website websiteGetById(int websiteId)
         {
-            Website c = null;
+            Website c = null; // set an object of website as null
 
-            DataProvider.ExecuteCmd(GetConnection, "dbo.Website_SelectById"
+            DataProvider.ExecuteCmd(GetConnection, "dbo.Website_SelectById" // establish sql connection to stored proc
               , inputParamMapper: delegate (SqlParameterCollection paramCollection)
               {
-                  paramCollection.AddWithValue("@Id", websiteId);
+                  paramCollection.AddWithValue("@Id", websiteId); // input the website id
 
 
               }, map: delegate (IDataReader reader, short set)
               {
-                  int startingIndex = 0;
+                  int startingIndex = 0; //starting ordinal
 
-                  c = new Website();
+                  c = new Website(); // instantiante a new instance of website object
 
-                  c.Id = reader.GetSafeInt32(startingIndex++);
+                  c.Id = reader.GetSafeInt32(startingIndex++); //assign website values to the website object
                   c.Name = reader.GetSafeString(startingIndex++);
                   c.Slug = reader.GetSafeString(startingIndex++);
                   c.Description = reader.GetSafeString(startingIndex++);
@@ -128,9 +128,9 @@ namespace Bringpro.Web.Services
                   c.Subject = reader.GetSafeString(startingIndex++);
                   c.PermissionReminder = reader.GetSafeString(startingIndex++);
 
-                  Media m = new Media();
+                  Media m = new Media(); // instantiate new instance of media object
 
-                  m.Id = reader.GetSafeInt32(startingIndex++);
+                  m.Id = reader.GetSafeInt32(startingIndex++);  //assign media values to the media object
                   m.DateModified = reader.GetSafeDateTime(startingIndex++);
                   m.DateCreated = reader.GetSafeDateTime(startingIndex++);
                   m.Url = reader.GetSafeString(startingIndex++);
@@ -141,14 +141,14 @@ namespace Bringpro.Web.Services
                   m.ExternalMediaId = reader.GetSafeInt32(startingIndex++);
                   m.FileType = reader.GetSafeString(startingIndex++);
 
-                  if (m.Id != 0)
+                  if (m.Id != 0) // if media is not null, has values attached to it
                   {
-                      c.Media = m;
+                      c.Media = m; // add the media object to the website object
                   }
 
-                  Bringpro.Web.Domain.Address a = new Bringpro.Web.Domain.Address();
+                  Bringpro.Web.Domain.Address a = new Bringpro.Web.Domain.Address(); // instantiate a new instance of the address object
 
-                  a.AddressId = reader.GetSafeInt32(startingIndex++);
+                  a.AddressId = reader.GetSafeInt32(startingIndex++); //assign the address values to the address object
                   a.DateCreated = reader.GetSafeDateTime(startingIndex++);
                   a.DateModified = reader.GetSafeDateTime(startingIndex++);
                   a.UserId = reader.GetSafeString(startingIndex++);
@@ -164,32 +164,32 @@ namespace Bringpro.Web.Services
                   a.Latitude = reader.GetSafeDecimal(startingIndex++);
                   a.Longitude = reader.GetSafeDecimal(startingIndex++);
 
-                  if (a.AddressId != 0)
+                  if (a.AddressId != 0) // perform a null check to make sure address has values
                   {
-                      c.Address = a;
+                      c.Address = a; // add the address object to the website object
                   }
 
               }
 
            );
-            return c;
+            return c; //return the website object, with the added media and address objects if they exist
         }
 
-        public static Website websiteGetBySlug(string Slug)
+        public static Website websiteGetBySlug(string Slug) // create a method to return a website object by website slug(name)
         {
-            Website c = null;
+            Website c = null; //set a website object to null
 
-            DataProvider.ExecuteCmd(GetConnection, "dbo.Website_GetAllBySlug"
+            DataProvider.ExecuteCmd(GetConnection, "dbo.Website_GetAllBySlug" // connect to sql stored proc 
               , inputParamMapper: delegate (SqlParameterCollection paramCollection)
               {
-                  paramCollection.AddWithValue("@Slug", Slug);
+                  paramCollection.AddWithValue("@Slug", Slug); // input slug to the stored proc
 
               }, map: delegate (IDataReader reader, short set)
               {
-                  int startingIndex = 0;
-                  c = new Website();
+                  int startingIndex = 0; // starting ordinal
+                  c = new Website(); //instantiate a new object of website
 
-                  c.Id = reader.GetSafeInt32(startingIndex++);
+                  c.Id = reader.GetSafeInt32(startingIndex++); // assign values to website based on slug
                   c.Name = reader.GetSafeString(startingIndex++);
                   c.Slug = reader.GetSafeString(startingIndex++);
                   c.Description = reader.GetSafeString(startingIndex++);
@@ -200,9 +200,9 @@ namespace Bringpro.Web.Services
                   c.Phone = reader.GetSafeString(startingIndex++);
                   c.AddressId = reader.GetSafeInt32(startingIndex++);
 
-                  Media m = new Media();
+                  Media m = new Media(); // instantiate new media object
 
-                  m.Id = reader.GetSafeInt32(startingIndex++);
+                  m.Id = reader.GetSafeInt32(startingIndex++); //assign media values to media object
                   m.DateModified = reader.GetSafeDateTime(startingIndex++);
                   m.DateCreated = reader.GetSafeDateTime(startingIndex++);
                   m.Url = reader.GetSafeString(startingIndex++);
@@ -213,14 +213,14 @@ namespace Bringpro.Web.Services
                   m.ExternalMediaId = reader.GetSafeInt32(startingIndex++);
                   m.FileType = reader.GetSafeString(startingIndex++);
 
-                  if (m.Id != 0)
+                  if (m.Id != 0) // perform null check on media to see if values exist
                   {
-                      c.Media = m;
+                      c.Media = m; // if media returns values, assign it to the website object
                   }
 
-                  Bringpro.Web.Domain.Address a = new Bringpro.Web.Domain.Address();
+                  Bringpro.Web.Domain.Address a = new Bringpro.Web.Domain.Address(); // instantiate new address object
 
-                  a.AddressId = reader.GetSafeInt32(startingIndex++);
+                  a.AddressId = reader.GetSafeInt32(startingIndex++); // return address values and assign to the address object
                   a.DateCreated = reader.GetSafeDateTime(startingIndex++);
                   a.DateModified = reader.GetSafeDateTime(startingIndex++);
                   a.UserId = reader.GetSafeString(startingIndex++);
@@ -234,13 +234,13 @@ namespace Bringpro.Web.Services
                   a.Latitude = reader.GetSafeDecimal(startingIndex++);
                   a.Longitude = reader.GetSafeDecimal(startingIndex++);
 
-                  if (a.AddressId != 0)
+                  if (a.AddressId != 0) // perform a null check on address object
                   {
-                      c.Address = a;
+                      c.Address = a; // if address returns values, assign to the website object
                   }
               }
               );
-            return c;
+            return c; //return the website object with assigned media and address objects if they exist
         }
 
         public async Task<bool> websiteUpdate(WebsiteUpdateRequest model)
@@ -296,8 +296,7 @@ namespace Bringpro.Web.Services
                 , inputParamMapper: delegate (SqlParameterCollection paramCollection)
                 {
                     paramCollection.AddWithValue("@UserId", model.UserId);
-                    //paramCollection.AddWithValue("@WebsitesId", websiteId);
-
+                
                     SqlParameter s = new SqlParameter("@WebsiteIds", SqlDbType.Structured);
                     if (model.WebsiteIds != null && model.WebsiteIds.Any())
                     {
@@ -341,7 +340,7 @@ namespace Bringpro.Web.Services
 
         }
 
-        public static Website GetWebsiteIdBySlug(string Slug)
+        public static Website GetWebsiteIdBySlug(string Slug) // service to return website id based on website slug(name)
         {
             Website w = null;
 
