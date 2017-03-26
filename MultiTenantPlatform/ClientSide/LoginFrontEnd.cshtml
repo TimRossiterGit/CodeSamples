@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "LoginFrontEnd";
-    Layout = "~/Views/Shared/_LayoutFrontEnd.cshtml";
+    Layout = "~/Views/Shared/_LayoutFrontEnd.cshtml"; @*Apply front end layout*@
       
 }
 
@@ -32,7 +32,7 @@
     height: 50%;
 }
 
-    .login-header {
+    .login-header {    @*Example of loading values by viewmodel and razor tags*@
     background-color: @Model.GetStringValueBySettingSlug("login-background-color");
    
     }

@@ -37,8 +37,6 @@ BEGIN
 			  ,[w].[DateCreated]
 			  ,[w].[DateModified]
 			  ,[w].[Phone]
-			  --,[w].[BackgroundColor]
-			  --,[w].[HeaderColor]
 			  ,[s].[Id]
 			  ,[s].[Category]
 			  ,[s].[Name]

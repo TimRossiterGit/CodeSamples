@@ -22,6 +22,76 @@ namespace Bringpro.Web.Services
         [Dependency]
         public IEmailCampaignsService _CampaignsService { get; set; }
 
+        //main service used in multi-tenant platform
+        public static Website websiteGetBySlug(string Slug) // create a method to return a website object by website slug(name)
+        {
+            Website c = null; //set a website object to null
+
+            DataProvider.ExecuteCmd(GetConnection, "dbo.Website_GetAllBySlug" // connect to sql stored proc 
+              , inputParamMapper: delegate (SqlParameterCollection paramCollection)
+              {
+                  paramCollection.AddWithValue("@Slug", Slug); // input slug to the stored proc
+
+              }, map: delegate (IDataReader reader, short set)
+              {
+                  int startingIndex = 0; // starting ordinal
+                  c = new Website(); //instantiate a new object of website
+
+                  c.Id = reader.GetSafeInt32(startingIndex++); // assign values to website based on slug
+                  c.Name = reader.GetSafeString(startingIndex++);
+                  c.Slug = reader.GetSafeString(startingIndex++);
+                  c.Description = reader.GetSafeString(startingIndex++);
+                  c.Url = reader.GetSafeString(startingIndex++);
+                  c.MediaId = reader.GetSafeInt32(startingIndex++);
+                  c.DateCreated = reader.GetSafeDateTime(startingIndex++);
+                  c.DateModified = reader.GetSafeDateTime(startingIndex++);
+                  c.Phone = reader.GetSafeString(startingIndex++);
+                  c.AddressId = reader.GetSafeInt32(startingIndex++);
+
+                  Media m = new Media(); // instantiate new media object
+
+                  m.Id = reader.GetSafeInt32(startingIndex++); //assign media values to media object
+                  m.DateModified = reader.GetSafeDateTime(startingIndex++);
+                  m.DateCreated = reader.GetSafeDateTime(startingIndex++);
+                  m.Url = reader.GetSafeString(startingIndex++);
+                  m.MediaType = reader.GetSafeInt32(startingIndex++);
+                  m.UserId = reader.GetSafeString(startingIndex++);
+                  m.Title = reader.GetSafeString(startingIndex++);
+                  m.Description = reader.GetSafeString(startingIndex++);
+                  m.ExternalMediaId = reader.GetSafeInt32(startingIndex++);
+                  m.FileType = reader.GetSafeString(startingIndex++);
+
+                  if (m.Id != 0) // perform null check on media to see if values exist
+                  {
+                      c.Media = m; // if media returns values, assign it to the website object
+                  }
+
+                  Bringpro.Web.Domain.Address a = new Bringpro.Web.Domain.Address(); // instantiate new address object
+
+                  a.AddressId = reader.GetSafeInt32(startingIndex++); // return address values and assign to the address object
+                  a.DateCreated = reader.GetSafeDateTime(startingIndex++);
+                  a.DateModified = reader.GetSafeDateTime(startingIndex++);
+                  a.UserId = reader.GetSafeString(startingIndex++);
+                  a.Name = reader.GetSafeString(startingIndex++);
+                  a.ExternalPlaceId = reader.GetSafeString(startingIndex++);
+                  a.Line1 = reader.GetSafeString(startingIndex++);
+                  a.Line2 = reader.GetSafeString(startingIndex++);
+                  a.City = reader.GetSafeString(startingIndex++);
+                  a.StateId = reader.GetSafeInt32(startingIndex++);
+                  a.ZipCode = reader.GetSafeInt32(startingIndex++);
+                  a.Latitude = reader.GetSafeDecimal(startingIndex++);
+                  a.Longitude = reader.GetSafeDecimal(startingIndex++);
+
+                  if (a.AddressId != 0) // perform a null check on address object
+                  {
+                      c.Address = a; // if address returns values, assign to the website object
+                  }
+              }
+              );
+            return c; //return the website object with assigned media and address objects if they exist
+        }
+
+
         //get all websites and values as a list
         public static List<Website> websiteGetAll()
         {
@@ -175,73 +245,7 @@ namespace Bringpro.Web.Services
             return c; //return the website object, with the added media and address objects if they exist
         }
 
-        public static Website websiteGetBySlug(string Slug) // create a method to return a website object by website slug(name)
-        {
-            Website c = null; //set a website object to null
-
-            DataProvider.ExecuteCmd(GetConnection, "dbo.Website_GetAllBySlug" // connect to sql stored proc 
-              , inputParamMapper: delegate (SqlParameterCollection paramCollection)
-              {
-                  paramCollection.AddWithValue("@Slug", Slug); // input slug to the stored proc
-
-              }, map: delegate (IDataReader reader, short set)
-              {
-                  int startingIndex = 0; // starting ordinal
-                  c = new Website(); //instantiate a new object of website
-
-                  c.Id = reader.GetSafeInt32(startingIndex++); // assign values to website based on slug
-                  c.Name = reader.GetSafeString(startingIndex++);
-                  c.Slug = reader.GetSafeString(startingIndex++);
-                  c.Description = reader.GetSafeString(startingIndex++);
-                  c.Url = reader.GetSafeString(startingIndex++);
-                  c.MediaId = reader.GetSafeInt32(startingIndex++);
-                  c.DateCreated = reader.GetSafeDateTime(startingIndex++);
-                  c.DateModified = reader.GetSafeDateTime(startingIndex++);
-                  c.Phone = reader.GetSafeString(startingIndex++);
-                  c.AddressId = reader.GetSafeInt32(startingIndex++);
-
-                  Media m = new Media(); // instantiate new media object
-
-                  m.Id = reader.GetSafeInt32(startingIndex++); //assign media values to media object
-                  m.DateModified = reader.GetSafeDateTime(startingIndex++);
-                  m.DateCreated = reader.GetSafeDateTime(startingIndex++);
-                  m.Url = reader.GetSafeString(startingIndex++);
-                  m.MediaType = reader.GetSafeInt32(startingIndex++);
-                  m.UserId = reader.GetSafeString(startingIndex++);
-                  m.Title = reader.GetSafeString(startingIndex++);
-                  m.Description = reader.GetSafeString(startingIndex++);
-                  m.ExternalMediaId = reader.GetSafeInt32(startingIndex++);
-                  m.FileType = reader.GetSafeString(startingIndex++);
-
-                  if (m.Id != 0) // perform null check on media to see if values exist
-                  {
-                      c.Media = m; // if media returns values, assign it to the website object
-                  }
-
-                  Bringpro.Web.Domain.Address a = new Bringpro.Web.Domain.Address(); // instantiate new address object
-
-                  a.AddressId = reader.GetSafeInt32(startingIndex++); // return address values and assign to the address object
-                  a.DateCreated = reader.GetSafeDateTime(startingIndex++);
-                  a.DateModified = reader.GetSafeDateTime(startingIndex++);
-                  a.UserId = reader.GetSafeString(startingIndex++);
-                  a.Name = reader.GetSafeString(startingIndex++);
-                  a.ExternalPlaceId = reader.GetSafeString(startingIndex++);
-                  a.Line1 = reader.GetSafeString(startingIndex++);
-                  a.Line2 = reader.GetSafeString(startingIndex++);
-                  a.City = reader.GetSafeString(startingIndex++);
-                  a.StateId = reader.GetSafeInt32(startingIndex++);
-                  a.ZipCode = reader.GetSafeInt32(startingIndex++);
-                  a.Latitude = reader.GetSafeDecimal(startingIndex++);
-                  a.Longitude = reader.GetSafeDecimal(startingIndex++);
-
-                  if (a.AddressId != 0) // perform a null check on address object
-                  {
-                      c.Address = a; // if address returns values, assign to the website object
-                  }
-              }
-              );
-            return c; //return the website object with assigned media and address objects if they exist
-        }
+       
 
         public async Task<bool> websiteUpdate(WebsiteUpdateRequest model)
         {

@@ -16,6 +16,7 @@ namespace Bringpro.Web.Services
     {
 
         // get website settings by website slug
+        // main service used for multi-tenant platform
         public List<WebsiteSettings> GetSettingsBySlug(string Slug)
         {
             List<WebsiteSettings> list = null; //create empty list of website settings

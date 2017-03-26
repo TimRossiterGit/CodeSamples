@@ -19,6 +19,7 @@ namespace Bringpro.Web.Controllers
         [Dependency]
         public IBrainTreeService _BrainTreeService { get; set; }
 
+        //Dependency from website service - allows us to run specific services
         [Dependency]
         public IWebsiteService _WebsiteService { get; set; }
 
@@ -27,6 +28,7 @@ namespace Bringpro.Web.Controllers
         [Route("{Slug}/home")]
         public ActionResult Index(string Slug)
         {
+            //instantiate website viewmodel - majority of logic below in function as it repeats througout the various views
             WebsiteViewModel vm = _GetViewModel(Slug);
           
             //access the same httpcontext
@@ -50,7 +52,7 @@ namespace Bringpro.Web.Controllers
         public ActionResult RegisterFrontEnd(string Slug, string TokenHash = null)
         {
             WebsiteViewModel vm = _GetViewModel(Slug);
-
+            //adding a tokenhash to the viewmodel for registration
             vm.TokenHash = TokenHash;
 
             return View(vm);
@@ -80,31 +82,40 @@ namespace Bringpro.Web.Controllers
             return View(vm);
         }
 
-        private WebsiteViewModel _GetViewModel(string Slug="bringpro")
+        //get viewmodel function created for majority of logic needed to inject website view model with appropriate data
+        private WebsiteViewModel _GetViewModel(string Slug)
         {
+            //null check on slug, if null load bringpro website by default
+            //added for the azure hosted version
             if (Slug == null)
             {
                 Slug = "bringpro";
             }
+
+            //instantiate new instance of website view model
             WebsiteViewModel vm = new WebsiteViewModel();
-            vm.Slug = Slug;
-            vm.CategoryEnum = SettingsCategory.String;
+            vm.Slug = Slug; // add website slug to view model
+            vm.CategoryEnum = SettingsCategory.String; //adding enums to the viewmodel
             vm.SettingTypeEnum = SettingsType.Design;
             vm.SettingSectionEnum = SettingsSection.Layout;
 
-            WebsiteSettingsServices websiteService = new WebsiteSettingsServices();
-            List<WebsiteSettings> WebsiteBySlug = websiteService.GetSettingsBySlug(Slug);
+            WebsiteSettingsServices websiteService = new WebsiteSettingsServices(); // instantiate a new instance of website settings service
+            //generate a new list of website settings - populated by service that loads settings by website slug
+            List<WebsiteSettings> WebsiteBySlug = websiteService.GetSettingsBySlug(Slug); 
             vm.Settings = WebsiteBySlug;
             if (vm.Settings.Count < 1 && Slug != "backoffice")
             {
                 throw new HttpException(404, "Website Does Not Exist");
             }
 
+            //if website exists - load a model of website 
             if (Slug != null && Slug != "")
             {
                 vm.Website = WebsiteService.websiteGetBySlug(Slug);
             }
 
+            //returning the viewmodel after populating with website settings model and website model
+            // both have different fields of data
             return vm;
         }
 
@@ -176,14 +187,13 @@ namespace Bringpro.Web.Controllers
         public ActionResult ConfirmAuth(Guid emailGuid, string Slug)    //  this cannot be null
         {
             WebsiteViewModel vm = _GetViewModel(Slug);
-            //ItemResponse<Token> userToken = new ItemResponse<Token>();
+      
             vm.userToken = null;
             vm.userToken = TokenService.userGetByGuid(emailGuid);
 
             if (vm.userToken == null || vm.userToken.Used != null)
             {
-                //ItemViewModel<Guid> vm = new ItemViewModel<Guid>();
-                //vm.Item = emailGuid;
+              
                 return View(vm);
             }
 
