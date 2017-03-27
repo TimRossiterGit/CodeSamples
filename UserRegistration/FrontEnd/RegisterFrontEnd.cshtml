@@ -1,0 +1,301 @@
+﻿@model bringpro.Web.Models.ViewModels.WebsiteViewModel @*Loading website view model on page load*@
+
+@{
+    ViewBag.Title = "RegisterFrontEnd";
+    Layout = "~/Views/Shared/_LayoutFrontEnd.cshtml"; @*Applying front end layout to the view*@
+}
+
+<input type="hidden" id="websiteSlugId" value="@Model.Slug" /> @*Binding attributes to hidden elements*@
+<input type="hidden" id="tokenHash" value="@Model.TokenHash" />
+
+<style>
+      .login {
+
+               @*Using razor tags to render specific settings on page load*@
+              background: url(@Model.GetImageValueBySettingSlug("page-background-image")) no-repeat center center fixed;
+              -webkit-background-size: cover;
+              -moz-background-size: cover;
+              -o-background-size: cover;
+               background-size: cover;
+              background-color: @Model.GetStringValueBySettingSlug("page-background-color");
+          }
+
+     .default-logo {
+                 display: block;
+                   margin: 0 auto;
+            }
+
+    .login img {
+    width: 50%;
+    height: 50%;
+}
+
+    .register-header-bg {
+    background-color: @Model.GetStringValueBySettingSlug("login-background-color");
+
+    }
+
+    .l-block {
+    background-color: @Model.GetStringValueBySettingSlug("login-background-color-text");
+    border: 1px solid black;
+    }
+
+
+</style>
+
+
+
+
+@*establishing the container for angular controller*@
+<div ng-controller="registerUserController as reguser" class="container">
+    <div class="login register" data-lbg="blue">
+        <!-- Register -->
+        <div class="l-block toggled" id="l-register">
+            @*on form submission run create user function - with angular validation, disabled default validation that otherwise overrides angular validation*@
+            <form id="userAccountForm" name="userAccountForm" class="form-horizontal" ng-submit="reguser.onCreateUserSubmit(userAccountForm.$valid)" novalidate>
+                <div class="lb-header register-header-bg">
+                    <img class="stnd default-logo dark-version" alt="bringpro"
+                         src="@Model.GetImageValueBySettingSlug("login-logo")" /> @*Reusing login tags for continuity among views*@
+                        <p class="text-center">@Model.GetStringValueBySettingSlug("login-title")</p>
+                    </div>
+                    <div class="lb-body">
+                        <div class="form-group fg-float" ng-class="{'has-error': userAccountForm.firstName.$invalid && !userAccountForm.firstName.$pristine}">
+                            <div class="fg-line">
+                                @*set model to assign first name input to. make field required input*@
+                                <input type="text" class="input-sm form-control fg-input" id="firstName" name="firstName" ng-model="reguser.registration.FirstName" required>
+                                <label class="fg-label">First Name</label>
+                                @*validation that displays error message if input is incorrect*@
+                                <small ng-show="userAccountForm.firstName.$invalid && !userAccountForm.firstName.$pristine && userAccountForm.firstName.$error.required" class="help-block">Please enter your first name.</small>
+                            </div>
+                        </div>
+                        <div class="form-group fg-float" ng-class="{'has-error':userAccountForm.lastName.$invalid && !userAccountForm.lastName.$pristine}">
+                            <div class="fg-line">
+                                @*set model to assign last name input to. make field required input*@
+                                <input type="text" class="input-sm form-control fg-input" id="lastName" name="lastName" ng-model="reguser.registration.LastName" required>
+                                <label class="fg-label">Last Name</label>
+                                @*validation that displays error message if input is incorrect*@
+                                <small ng-show="userAccountForm.lastName.$invalid && !userAccountForm.lastName.$pristine && userAccountForm.lastName.$error.required" class="help-block">Please enter your last name.</small>
+                            </div>
+                        </div>
+                        <div class="form-group fg-float" ng-class="{'has-error': userAccountForm.phoneNumber.$invalid && !userAccountForm.phoneNumber.$pristine}">
+                            <div class="fg-line">
+                                @*set model to assign phone number input to. assign regex to eliminate any characters other than numbers. make field required input*@
+                                <input type="text" class="input-sm form-control fg-input" id="phoneNumber" name="phoneNumber" ng-maxlength="10" ng-pattern="reguser.phoneRegex" ng-model="reguser.registration.Phone" required>
+                                <label class="fg-label">Phone</label>
+                                @*validation that displays error message if input is incorrect*@
+                                <small ng-show="userAccountForm.phoneNumber.$invalid && !userAccountForm.phoneNumber.$pristine && userAccountForm.phoneNumber.$error.required" class="help-block">Please enter a phone number.</small>
+                                <small ng-show="userAccountForm.phoneNumber.$error.maxlength || userAccountForm.phoneNumber.$error.pattern" class="help-block">Enter a valid phone number.</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group fg-float" ng-class="{'has-error': userAccountForm.emailAddress.$invalid && !userAccountForm.emailAddress.$pristine}">
+                            <div class="fg-line">
+                                @*set model to assign email address input to. make field required input*@
+                                <input type="text" class="input-sm form-control fg-input" id="emailAddress" name="emailAddress" ng-model="reguser.registration.Email" required>
+                                <label class="fg-label">Email Address</label>
+                                @*validation that displays error message if input is incorrect*@
+                                <small ng-show="userAccountForm.emailAddress.$invalid && !userAccountForm.emailAddress.$pristine" class="help-block">Please enter a valid email address.</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group fg-float" ng-class="{'has-error': userAccountForm.passwordInput.$invalid && !userAccountForm.passwordInput.$pristine}" required>
+                            <div class="fg-line">
+                                @*set model to assign password input to. assign regex to check for required special characters. make field required input*@
+                                <input type="password" class="input-sm form-control fg-input" ng-pattern="reguser.regex" id="passwordInput" name="passwordInput" ng-minlength="6" ng-maxlength="15" ng-model="reguser.registration.Password">
+                                <label class="fg-label">Password</label>
+                                @*validation that displays error message if input is incorrect*@
+                                <small ng-show="userAccountForm.passwordInput.$invalid && !userAccountForm.passwordInput.$pristine && userAccountForm.passwordInput.$error.pattern" class="help-block">Passwords must be at least 6 characters. Passwords must have at least one non letter or digit character. Passwords must have at least one digit ('0'-'9'). Passwords must have at least one uppercase ('A'-'Z').</small>
+                                <small ng-show="userAccountForm.passwordInput.$error.minlength" class="help-block">Password is too short.</small>
+                            </div>
+                        </div>
+                        @*disable submit button if form is invalid*@
+                        <button value="submit" id="createNewUserButton" class="btn btn-success btn-sm center-block" ng-disabled="userAccountForm.$invalid">Create Account</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/ng-template" id="alertModal.html">
+        <div class="moda-dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Input Error!</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="modalAlertText">{{m.alert}}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-warning" data-dismiss="modal" ng-click="m.ok()">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
+
+
+    @section pageInitScripts {
+
+    }
+
+
+    @section Scripts {
+        @*loads javascript file containing create user ajax call logic*@
+        <script src="~/Assets/App/Services/bringpro.services.user.js"></script>
+        <style>
+            small.helper-text {
+                color: #F6675D;
+            }
+        </style>
+
+        <style>
+            .paddingBottom {
+                padding-bottom: 20px;
+            }
+        </style>
+
+        <script type="text/javascript">
+            //initiate angular factory for loading services
+            (function () {
+                "use strict";
+                angular.module(APPNAME) //creating register user service
+                    .factory('$registerUserService', $registerUserService);
+                //injecting base service and base bringpro service
+                $registerUserService.$inject = ['$baseService', '$bringpro'];
+
+                function $registerUserService($baseService, $bringpro) {
+                    // ajaxlist variable similar to client side inheritance, gaining access to functions in js file
+                    var ajaxList = bringpro.services.user;
+                    var newService = $baseService.merge(true, {}, ajaxList, $baseService);
+                    return newService;
+                }
+
+            })();
+
+            (function () {
+                "use strict";
+                angular.module(APPNAME) // creating new controller
+                    .controller('registerUserController', registerUserController);
+
+                //injecting the angular controller with service and js/j$
+                registerUserController.$inject = ['$scope', '$baseController', '$registerUserService', '$uibModal'];
+
+                function registerUserController($scope, $baseController, $registerUserService, $uibModal) {
+                    //init variables
+                    var vm = this; // set current viewmodel to 'this' selector
+                    vm.registration = {}; //empty object of registration
+                    vm.errorMessage = null;
+                    vm.regex = /(?=.*[!@@#\$%\^&\*])(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])/; //password regex line to search for required characters
+                    vm.phoneRegex = /^[0-9]*$/; // phone number regex to only store numbers
+                    vm.tokenHash = $("#tokenHash").val(); // hidden input token hash assign to a variable
+                    vm.websiteSlug = $('#websiteSlugId').val(); // hidden input website slug assigned to variable, makes accessible
+                    console.log('slug', vm.websiteSlug);
+
+                    //injections - assigns injections to current version of selected viewmodel
+                    vm.$scope = $scope;
+                    vm.$baseController = $baseController;
+                    vm.$registerUserService = $registerUserService;
+                    vm.$uibModal = $uibModal;
+
+                    //hoisting
+                    vm.onCreateUserSubmit = _onCreateUserSubmit;
+                    //inheritance
+                    $baseController.merge(vm, $baseController);
+                    vm.notify = vm.$registerUserService.getNotifier($scope);
+                    //render on page load
+                    render();
+
+                    //startup
+                    function render() {
+                        console.log("Startup: firing");
+                        console.log("I am the tokenHash payload: ", vm.payload);
+                    };
+
+                    function _openModal(error) {
+                        vm.errorMessage = error;
+                        var alertModal = vm.$uibModal.open({
+                            animation: true,
+                            backdrop: true,
+                            templateUrl: 'alertModal.html',
+                            controller: 'modalController as m',
+                            size: 'med',
+                            resolve: {
+                                alert: function () {
+                                    return vm.errorMessage;
+                                }
+                            }
+                        });
+                    }
+                    //function runs on valid registration form submission
+                    function _onCreateUserSubmit(isValid) {
+                        if (isValid) {
+                            vm.registration.tokenHash = vm.tokenHash; // assigning token hash and slug to registration payload
+                            vm.registration.Slug = vm.websiteSlug;
+                            //ajax call to insert user
+                            vm.$registerUserService.insertNewUser(vm.registration, _userSubmitSuccess, _onError);
+                            console.log("Registration is valid");
+                        }
+                        else {
+                            console.log("Registration is invalid!");
+                        }
+                    }
+                    //successful user registration
+                    function _userSubmitSuccess() {
+                        console.log("User registration was a success!");
+                        //alert service to notify user of successful registration
+                        vm.$alertService.success("You have successfully registered!");
+                        location.href = "/@Model.Slug/registersuccess"; //re-route user to simple success screen
+                    }
+                    //registration error notification
+                    function _onError(error) {
+                        console.log(error);
+                        vm.$alertService.error("Error! Please check your phone number and email, then try again!");
+                    }
+                }
+
+            })();
+
+            //IIFE for Modals structure and loading
+            (function () {
+                "use strict";
+
+                angular.module(APPNAME)
+                    .controller('modalController', ModalController);
+
+                ModalController.$inject = ['$scope', '$baseController', '$uibModalInstance', 'alert'];
+
+                function ModalController($scope, $baseController, $uibModalInstance, alert) {
+                    var vm = this;
+
+                    $baseController.merge(vm, $baseController);
+                    vm.$scope = $scope;
+                    vm.$uibModalInstance = $uibModalInstance;
+                    vm.alert = alert;
+
+                    vm.ok = function () {
+                        vm.$uibModalInstance.close();
+                    };
+
+                    vm.cancel = function () {
+                        vm.$uibModalInstance.dismiss('cancel');
+                    }
+                };
+
+            })();
+
+
+        </script>
+
+
+
+
+
+    }
+
+
+
