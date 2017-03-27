@@ -11,3 +11,7 @@ User Registration </br>
 Registering new users </br>
 Logic includes verifiyng users not already registered in the system </br>
 User is registered with specific website that they registered on
+
+Mandrill Web Api </br>
+Used for sending transactional emails </br> 
+Implemented using dependency injection
