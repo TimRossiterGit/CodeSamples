@@ -11,7 +11,7 @@ namespace bringpro.Web.Services.Interfaces
 {
     public interface IUserEmailService
     {
-        //SendGrid
+        //SendGrid & Mandrill Signatures
         void SendProfileEmail(Guid? Token, string Email);
         void SendAdminProfileEmail(Guid? Token, string Email);
         void sendContactRequestEmail(EmailRequestModel crModel);

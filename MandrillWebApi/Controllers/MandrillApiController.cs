@@ -22,21 +22,14 @@ namespace bringpro.Web.Controllers.Api
     public class MandrillApiController : ApiController
     {
         //USE FOR TESTING MANDRILL
-
-        //might need dependency
+        //Dependency for Mandrill Service Dependency Injection 
         [Dependency]
         public IUserEmailService _MandrillService { get; set; }
 
         [Route("test"), HttpPost]
-        public HttpResponseMessage SendEmail(MandrillRequestModelTest model)
-        {
-           
-
-             //_MandrillService.ResetPasswordEmail(Token, Email, "bringpro");
-
+        public HttpResponseMessage SendEmail(MandrillRequestModel model)
+        {   
             _MandrillService.SendEmail(model);
-
-            //return Request.CreateResponse(HttpStatusCode.OK, response);
 
             if (!ModelState.IsValid)
             {

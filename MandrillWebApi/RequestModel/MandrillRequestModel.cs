@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace bringpro.Web.Models.Requests.Tests
+namespace bringpro.Web.Models.Requests
 {
-    public class MandrillRequestModelTest
+    //Mandrill Request Model
+    //Used for testing Mandrill
+    public class MandrillRequestModel
     {
         public string apiKey { get; set; }
 
